@@ -1,0 +1,24 @@
+<h1>All of our beautiful cats!</h1>
+
+<table>
+	<table border = '1'>
+	<tr>
+		<th>Name</th>
+		<th>Age</th>
+		<th>Birthday</th>
+		<th>Color</th>
+		<th>Sex</th>
+		<th>Profile</th>
+	</tr>
+<% @cats.each do |cat| %>
+	<tr>
+	<td><%= cat.name %></td>
+	<td><%= cat.age %></td>
+	<td><%= cat.birth_day.to_date %></td>
+	<td><%= cat.color %></td>
+	<td><%= cat.sex %></td>
+	<td><%= link_to "Profile", cat_url(cat) %></td>
+	</tr>
+<% end %>
+
+</table>
