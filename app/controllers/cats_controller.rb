@@ -7,7 +7,7 @@ class CatsController < ApplicationController
 
   def show
     @cat = Cat.find(params[:id])
-    @rental = @cat.cat_rental_requests
+    @rentals = CatRentalRequest.where("cat_id = ?", @cat.id).order(:created_at)
   end
 
   def create

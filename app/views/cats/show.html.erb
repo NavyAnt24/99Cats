@@ -4,3 +4,18 @@ Birthdate:  <%= @cat.birth_day.to_date %> <br>
 Color:  <%= @cat.color %> <br>
 Sex:  <%= @cat.sex %> <br>
 
+<%= link_to "Make New Rental Request", new_cat_rental_request_url %>
+
+<br><br>Existing Requests <br><br>
+
+<% @rentals.each do |rental| %>
+	Start date: <%= rental.start_date.to_date %><br>
+	End date: <%= rental.end_date.to_date %><br>
+	Rental status: <%= rental.status %><br>
+	<% if rental.status == "PENDING" %>
+		<%= button_to "Approve", approve_cat_rental_request_url(rental.id), :method => :post %>
+		<%= button_to "Deny", deny_cat_rental_request_url(rental.id), :method => :post %>
+	<% end %>
+	<br>
+
+<% end %>

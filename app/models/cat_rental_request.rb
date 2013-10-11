@@ -9,6 +9,22 @@ class CatRentalRequest < ActiveRecord::Base
 
   before_validation :set_initial_status
 
+
+  def approve!
+    ActiveRecord::Base.transaction do
+      self.status = "APPROVED" if self.status == "PENDING"
+      self.save!
+      overlapping_pending_requests.each do |request|
+        request.deny!
+      end
+    end
+  end
+
+  def deny!
+    self.status = "DENIED"
+    self.save!
+  end
+
   private
 
   def set_initial_status
@@ -16,8 +32,10 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def no_approved_overlapping_cat_requests
-    unless overlapping_approved_requests.empty?
-      errors[:base] << "There's already an approved request during those dates."
+    unless self.status == "DENIED"
+      unless overlapping_approved_requests.empty?
+        errors[:base] << "There's already an approved request during those dates."
+      end
     end
   end
 
@@ -28,6 +46,12 @@ class CatRentalRequest < ActiveRecord::Base
   def overlapping_approved_requests
     overlapping_requests.each_with_object([]) do |request, approved|
       approved << request if request.status == "APPROVED"
+    end
+  end
+
+  def overlapping_pending_requests
+    overlapping_requests.each_with_object([]) do |request, approved|
+      approved << request if request.status == "PENDING"
     end
   end
 
